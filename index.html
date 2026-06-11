@@ -273,7 +273,7 @@ h1 .hl{color:var(--gold);display:block}
     <div class="rules-wrap"><div class="rcard">
       <h2>&#x1F4CB; HOW IT WORKS</h2>
       <div class="rsec"><h3>The Buy-In</h3><p>Each of the <strong>24 players</strong> puts in <strong>$50</strong>, creating a <strong>$1,200 pot</strong>. The winner takes everything remaining after underdog bonuses are paid out.</p></div>
-      <div class="rsec"><h3>The Draft</h3><ul><li>48 teams split into two tiers: <strong>Top 24</strong> (favorites) and <strong>Bottom 24</strong> (underdogs) by FIFA power rankings.</li><li>Each player spins the wheel and gets <strong>one team from each tier</strong> — randomly paired.</li><li>No team is repeated. Every spin locks in a unique combo.</li></ul></div>
+      <div class="rsec"><h3>The Draft</h3><ul><li>48 teams split into two tiers: <strong>Top 24</strong> (favorites) and <strong>Bottom 24</strong> (underdogs) by FIFA power rankings.</li><li>Each player spins the wheel and gets <strong>one team from each tier</strong> -- randomly paired.</li><li>No team is repeated. Every spin locks in a unique combo.</li></ul></div>
       <div class="rsec"><h3>Winning the Pot</h3><p>Your <strong>Top 24 team</strong> is your main horse. If they win the tournament, you take whatever remains in the pot after underdog bonuses are paid out.</p></div>
       <div class="rsec"><h3>&#x1F7E2; Underdog Bonus</h3>
         <div class="hbox"><p>Every time your <strong>Bottom 24 team wins a knockout match</strong> (Round of 32 onward), you earn <strong>$25 from the pot</strong>. Group stage wins don't count. Bonuses are paid immediately.</p></div>
@@ -317,11 +317,15 @@ const BUY_IN=50,TOTAL=24,BONUS=25;
 let avTop=[...TOP_24],avBot=[...BOTTOM_24],picks=[],spinning=false;
 const ADMIN_PIN='2026barn';
 let isAdmin=sessionStorage.getItem('wcAdmin')==='1';
+
+// DEFAULT STATE -- baked in so all 24 picks load for everyone
+const DEFAULT_STATE='eyJwaWNrcyI6IFt7Im5hbWUiOiAiSXNpYWgiLCAidG9wIjogeyJuYW1lIjogIlNlbmVnYWwiLCAicmFuayI6IDE5fSwgImJvdCI6IHsibmFtZSI6ICJOZXcgWmVhbGFuZCIsICJyYW5rIjogNDV9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiSHVpZSIsICJ0b3AiOiB7Im5hbWUiOiAiQ29sb21iaWEiLCAicmFuayI6IDEwfSwgImJvdCI6IHsibmFtZSI6ICJDdXJhw6dhbyIsICJyYW5rIjogNDd9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiUmFtb24iLCAidG9wIjogeyJuYW1lIjogIkF1c3RyYWxpYSIsICJyYW5rIjogMjF9LCAiYm90IjogeyJuYW1lIjogIk5vcndheSIsICJyYW5rIjogMjV9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiSmF5IChDYXRhbGluYSkiLCAidG9wIjogeyJuYW1lIjogIk1vcm9jY28iLCAicmFuayI6IDExfSwgImJvdCI6IHsibmFtZSI6ICJEUiBDb25nbyIsICJyYW5rIjogMzl9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiRGlheiIsICJ0b3AiOiB7Im5hbWUiOiAiVXJ1Z3VheSIsICJyYW5rIjogMTJ9LCAiYm90IjogeyJuYW1lIjogIkVneXB0IiwgInJhbmsiOiAzMH0sICJ3aW5zIjogMH0sIHsibmFtZSI6ICJOaW1hIiwgInRvcCI6IHsibmFtZSI6ICJTcGFpbiIsICJyYW5rIjogM30sICJib3QiOiB7Im5hbWUiOiAiUGFuYW1hIiwgInJhbmsiOiA0NH0sICJ3aW5zIjogMH0sIHsibmFtZSI6ICJHcmFoYW0iLCAidG9wIjogeyJuYW1lIjogIkJyYXppbCIsICJyYW5rIjogNX0sICJib3QiOiB7Im5hbWUiOiAiUWF0YXIiLCAicmFuayI6IDQyfSwgIndpbnMiOiAwfSwgeyJuYW1lIjogIkF6YWFkIiwgInRvcCI6IHsibmFtZSI6ICJUdXJrZXkiLCAicmFuayI6IDI0fSwgImJvdCI6IHsibmFtZSI6ICJCb3NuaWEgYW5kIEhlcnplZ292aW5hIiwgInJhbmsiOiA0MX0sICJ3aW5zIjogMH0sIHsibmFtZSI6ICJKb3ZhbnkiLCAidG9wIjogeyJuYW1lIjogIkphcGFuIiwgInJhbmsiOiAxM30sICJib3QiOiB7Im5hbWUiOiAiSXJhcSIsICJyYW5rIjogMzZ9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiQWxkZXJ4YW4iLCAidG9wIjogeyJuYW1lIjogIklyYW4iLCAicmFuayI6IDIwfSwgImJvdCI6IHsibmFtZSI6ICJJdm9yeSBDb2FzdCIsICJyYW5rIjogMzJ9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiSm9oblZlZ2EiLCAidG9wIjogeyJuYW1lIjogIkVjdWFkb3IiLCAicmFuayI6IDIyfSwgImJvdCI6IHsibmFtZSI6ICJBbGdlcmlhIiwgInJhbmsiOiAyOX0sICJ3aW5zIjogMH0sIHsibmFtZSI6ICJNZWh0YWFiIiwgInRvcCI6IHsibmFtZSI6ICJBcmdlbnRpbmEiLCAicmFuayI6IDF9LCAiYm90IjogeyJuYW1lIjogIkNhbmFkYSIsICJyYW5rIjogMzV9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiU2FtIEZlZCIsICJ0b3AiOiB7Im5hbWUiOiAiU3dpdHplcmxhbmQiLCAicmFuayI6IDE3fSwgImJvdCI6IHsibmFtZSI6ICJIYWl0aSIsICJyYW5rIjogNDh9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiSmF5IChCSUwpIiwgInRvcCI6IHsibmFtZSI6ICJQb3J0dWdhbCIsICJyYW5rIjogNn0sICJib3QiOiB7Im5hbWUiOiAiR2hhbmEiLCAicmFuayI6IDMzfSwgIndpbnMiOiAwfSwgeyJuYW1lIjogIkdyYXkiLCAidG9wIjogeyJuYW1lIjogIkNyb2F0aWEiLCAicmFuayI6IDE1fSwgImJvdCI6IHsibmFtZSI6ICJTYXVkaSBBcmFiaWEiLCAicmFuayI6IDM3fSwgIndpbnMiOiAwfSwgeyJuYW1lIjogIk1pZ2d5IiwgInRvcCI6IHsibmFtZSI6ICJVU0EiLCAicmFuayI6IDE0fSwgImJvdCI6IHsibmFtZSI6ICJTb3V0aCBBZnJpY2EiLCAicmFuayI6IDM4fSwgIndpbnMiOiAwfSwgeyJuYW1lIjogIkpvc2giLCAidG9wIjogeyJuYW1lIjogIk5ldGhlcmxhbmRzIiwgInJhbmsiOiA3fSwgImJvdCI6IHsibmFtZSI6ICJQYXJhZ3VheSIsICJyYW5rIjogMzR9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiQW50IiwgInRvcCI6IHsibmFtZSI6ICJCZWxnaXVtIiwgInJhbmsiOiA4fSwgImJvdCI6IHsibmFtZSI6ICJDemVjaCBSZXB1YmxpYyIsICJyYW5rIjogMzF9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiSmVua2lucyIsICJ0b3AiOiB7Im5hbWUiOiAiQXVzdHJpYSIsICJyYW5rIjogMjN9LCAiYm90IjogeyJuYW1lIjogIlV6YmVraXN0YW4iLCAicmFuayI6IDQzfSwgIndpbnMiOiAwfSwgeyJuYW1lIjogIkJydWNlIiwgInRvcCI6IHsibmFtZSI6ICJTb3V0aCBLb3JlYSIsICJyYW5rIjogMTh9LCAiYm90IjogeyJuYW1lIjogIlNjb3RsYW5kIiwgInJhbmsiOiAyOH0sICJ3aW5zIjogMH0sIHsibmFtZSI6ICJDb3JrbGUiLCAidG9wIjogeyJuYW1lIjogIkdlcm1hbnkiLCAicmFuayI6IDl9LCAiYm90IjogeyJuYW1lIjogIkNhcGUgVmVyZGUiLCAicmFuayI6IDQ2fSwgIndpbnMiOiAwfSwgeyJuYW1lIjogIldlc3RvbiIsICJ0b3AiOiB7Im5hbWUiOiAiRnJhbmNlIiwgInJhbmsiOiAyfSwgImJvdCI6IHsibmFtZSI6ICJUdW5pc2lhIiwgInJhbmsiOiAyN30sICJ3aW5zIjogMH0sIHsibmFtZSI6ICJDYW0iLCAidG9wIjogeyJuYW1lIjogIk1leGljbyIsICJyYW5rIjogMTZ9LCAiYm90IjogeyJuYW1lIjogIlN3ZWRlbiIsICJyYW5rIjogMjZ9LCAid2lucyI6IDB9LCB7Im5hbWUiOiAiSm9zZSIsICJ0b3AiOiB7Im5hbWUiOiAiRW5nbGFuZCIsICJyYW5rIjogNH0sICJib3QiOiB7Im5hbWUiOiAiSm9yZGFuIiwgInJhbmsiOiA0MH0sICJ3aW5zIjogMH1dLCAiYW5nbGUiOiA5NjIuODk4MTQ4MzI1MjcxNn0=';
+
 function checkAdmin(){
   if(isAdmin)return true;
   const pin=prompt('Enter admin PIN:');
   if(pin===ADMIN_PIN){isAdmin=true;sessionStorage.setItem('wcAdmin','1');updateLockUI();return true;}
-  showToast('Wrong PIN — view only mode');return false;
+  showToast('Wrong PIN -- view only mode');return false;
 }
 function updateLockUI(){
   const btn=document.getElementById('spinBtn');
@@ -335,7 +339,7 @@ function saveState(){
   localStorage.setItem('barnboys_wc',JSON.stringify({picks,avTop,avBot,angle}));
 }
 function loadState(){
-  // URL hash first — works across devices
+  // URL param first
   const hash=new URLSearchParams(window.location.search).get('s')||'';
   if(hash){try{
     const d=JSON.parse(decodeURIComponent(escape(atob(hash))));
@@ -347,10 +351,20 @@ function loadState(){
     avBot=BOTTOM_24.filter(t=>!usedBot.has(t.name));
     return;
   }catch(e){}}
-  // Fallback: localStorage (same device)
+  // Fallback: localStorage
   try{
     const s=localStorage.getItem('barnboys_wc');
-    if(s){const d=JSON.parse(s);picks=d.picks||[];avTop=d.avTop||[...TOP_24];avBot=d.avBot||[...BOTTOM_24];angle=typeof d.angle==='number'?d.angle:-Math.PI/2;}
+    if(s){const d=JSON.parse(s);picks=d.picks||[];avTop=d.avTop||[...TOP_24];avBot=d.avBot||[...BOTTOM_24];angle=typeof d.angle==='number'?d.angle:-Math.PI/2;return;}
+  }catch(e){}
+  // Final fallback: baked-in default state
+  try{
+    const d=JSON.parse(decodeURIComponent(escape(atob(DEFAULT_STATE))));
+    picks=d.picks||[];
+    angle=typeof d.angle==='number'?d.angle:-Math.PI/2;
+    const usedTop=new Set(picks.map(p=>p.top.name));
+    const usedBot=new Set(picks.map(p=>p.bot.name));
+    avTop=TOP_24.filter(t=>!usedTop.has(t.name));
+    avBot=BOTTOM_24.filter(t=>!usedBot.has(t.name));
   }catch(e){}
 }
 
@@ -483,6 +497,7 @@ function updateTracker(){
 }
 
 function chW(idx,d){
+  if(!checkAdmin())return;
   const p=picks[idx];const nv=Math.max(0,Math.min(5,p.wins+d));
   if(nv===p.wins)return;p.wins=nv;saveState();updateUI();
   if(d>0)showToast('+$'+BONUS+' for '+p.name+'! Total: $'+(p.wins*BONUS));
@@ -505,7 +520,7 @@ function confirmReset(){
 }
 
 function copyShareLink(){
-  if(!picks.length){showToast('No picks yet — spin first!');return}
+  if(!picks.length){showToast('No picks yet -- spin first!');return}
   const url=window.location.href;
   navigator.clipboard.writeText(url).then(()=>{
     showToast('Link copied! Send it to the group 📲');
